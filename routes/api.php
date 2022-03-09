@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ComputerController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,5 +29,11 @@ Route::prefix('user')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-
+    Route::prefix('computer')->group(function () {
+        Route::get('/', [ComputerController::class, 'index']);
+        Route::get('/{computerId}', [ComputerController::class, 'show']);
+        Route::post('/', [ComputerController::class, 'store']);
+        Route::post('/{computerId}', [ComputerController::class, 'update']);
+        Route::delete('/{computerId}', [ComputerController::class, 'destroy']);
+    });
 });
