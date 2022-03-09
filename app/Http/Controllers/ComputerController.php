@@ -44,7 +44,6 @@ class ComputerController extends ApiController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'sometimes|required|id|exists:users',
             'name' => 'required|string|max:125',
             'sort' => 'sometimes|required|int'
         ]);
@@ -52,10 +51,7 @@ class ComputerController extends ApiController
             return $this->api_fail($validator->errors(), 400);
         }
         $validated = $validator->validated();
-        
-        if (empty($validated['user_id'])) {
-            $validated['user_id'] = auth()->user()?->id;
-        }
+        $validated['user_id'] = auth()->user()?->id;
 
         Computer::create($validated);
         return $this->api_ok();
@@ -75,7 +71,6 @@ class ComputerController extends ApiController
         }
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'sometimes|required|id|exists:users',
             'name' => 'required|string|max:125',
             'sort' => 'sometimes|required|int'
         ]);
@@ -83,10 +78,7 @@ class ComputerController extends ApiController
             return $this->api_fail($validator->errors(), 400);
         }
         $validated = $validator->validated();
-        
-        if (empty($validated['user_id'])) {
-            $validated['user_id'] = auth()->user()?->id;
-        }
+        $validated['user_id'] = auth()->user()?->id;
 
         $computer->update($validated);
         return $this->api_ok();
