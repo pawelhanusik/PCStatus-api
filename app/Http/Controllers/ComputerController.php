@@ -16,8 +16,10 @@ class ComputerController extends ApiController
      */
     public function index()
     {
+        $this->authorize('viewTheirs', Computer::class);
+
         return ComputerResource::collection(
-            Computer::where('user_id', auth()->user()->id)->get()
+            auth()->user()->computers
         );
     }
 
@@ -32,6 +34,9 @@ class ComputerController extends ApiController
         if (is_null($computer)) {
             return $this->api_fail(null, 404);
         }
+
+        $this->authorize($computer);
+
         return new ComputerResource($computer);
     }
 
@@ -43,6 +48,8 @@ class ComputerController extends ApiController
      */
     public function store(Request $request)
     {
+        $this->authorize(Computer::class);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:125',
             'sort' => 'sometimes|required|int'
@@ -70,6 +77,8 @@ class ComputerController extends ApiController
             return $this->api_fail(null, 404);
         }
 
+        $this->authorize($computer);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:125',
             'sort' => 'sometimes|required|int'
@@ -95,6 +104,8 @@ class ComputerController extends ApiController
         if (is_null($computer)) {
             return $this->api_fail(null, 404);
         }
+
+        $this->authorize($computer);
         
         $computer->delete();
         return $this->api_ok();
