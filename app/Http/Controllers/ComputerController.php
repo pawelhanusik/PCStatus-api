@@ -16,7 +16,9 @@ class ComputerController extends ApiController
      */
     public function index()
     {
-        return ComputerResource::collection(Computer::all());
+        return ComputerResource::collection(
+            Computer::where('user_id', auth()->user()->id)->get()
+        );
     }
 
     /**
