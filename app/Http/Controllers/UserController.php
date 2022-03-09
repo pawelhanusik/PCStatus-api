@@ -3,46 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
-    public function show() {
+    public function show()
+    {
         return request()->user();
     }
 
-    public function register() {
-        
-        $validator = Validator::make(request()->all(), [
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'username' => 'required|string|max:125|unique:users',
             'password' => 'required|string|max:125',
             'password2' => 'required|same:password'
         ]);
         if ($validator->fails()) {
-            return response()->json(['ValidationErorrs' => $validator->errors()->all()], 400);
+            return $this->api_fail(['ValidationErorrs' => $validator->errors()->all()], 400);
         }
         $validated = $validator->validated();
 
         $validated['password'] = Hash::make($validated['password']);
         User::create($validated);
 
-        return response('');
+        return $this->api_ok();
     }
 
-    public function login() {
-        $validator = Validator::make(request()->all(), [
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'username' => 'required|string|max:125',
             'password' => 'required|string|max:125',
             'token_name' => ''
         ]);
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            return $this->api_fail(['ValidationErorrs' => $validator->errors()->all()], 400);
         }
         $validated = $validator->validated();
         
         if (auth()->once($validated)) {
-            $tokenName = request()->token_name ?? 'mainToken';
+            $tokenName = $request->token_name ?? 'mainToken';
             /** @var User $user */
             $user = auth()->user();
             
@@ -51,7 +54,7 @@ class UserController extends Controller
 
             return response($token->plainTextToken);
         } else {
-            return response()->json([], 401);
+            return $this->api_fail(null, 401);
         }
     }
 
