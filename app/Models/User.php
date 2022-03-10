@@ -41,7 +41,23 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function computers() {
+    public function computers()
+    {
         return $this->hasMany(Computer::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function progresses()
+    {
+        return $this->hasMany(Progress::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

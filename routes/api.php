@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ComputerController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,11 +17,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'show'])->middleware('auth:sanctum')->name('user.show');
@@ -37,3 +34,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{computerId}', [ComputerController::class, 'destroy']);
     });
 });
+
+static $statusesModelsControllers = [
+    'notification' => NotificationController::class,
+    'progress' => ProgressController::class,
+    'task' => TaskController::class,
+];
+foreach ($statusesModelsControllers as $name => $controllerClass) {
+    Route::middleware('auth:sanctum')->group(function () use ($name, $controllerClass) {
+        Route::prefix($name)->group(function () use ($controllerClass) {
+            Route::get('/', [$controllerClass, 'index']);
+            Route::get('/{modelId}', [$controllerClass, 'show']);
+            Route::post('/', [$controllerClass, 'store']);
+            Route::post('/{modelId}', [$controllerClass, 'update']);
+            Route::delete('/{modelId}', [$controllerClass, 'destroy']);
+        });
+    });
+}
