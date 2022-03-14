@@ -18,8 +18,10 @@ class StatusModelController extends ApiController
     {
         $this->authorize('viewTheirs', static::$modelClass);
 
+        /** @var User $user */
+        $user = auth()->user();
         return static::$modelResourceClass::collection(
-            auth()->user()->computers
+            $user->hasMany(static::$modelClass)->get()
         );
     }
 
