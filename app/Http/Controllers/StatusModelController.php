@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\StatusModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Validator;
@@ -14,15 +15,26 @@ class StatusModelController extends ApiController
     protected static $modelClass = StatusModel::class;
     protected static $modelResourceClass = JsonResource::class;
 
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewTheirs', static::$modelClass);
 
+        $fromDate = null;
+        if ($request->has('fromDate')) {
+            $fromDate = $request->fromDate;
+        }
+
         /** @var User $user */
         $user = auth()->user();
-        return static::$modelResourceClass::collection(
-            $user->hasMany(static::$modelClass)->get()
-        );
+
+        $query = $user->hasMany(static::$modelClass);
+        if (!is_null($fromDate)) {
+            $query->where('updated_at', '>', new Carbon($fromDate));
+        }
+        $query->orderBy('updated_at');
+        $models = $query->get();
+
+        return static::$modelResourceClass::collection($models);
     }
 
     public function show($modelId)
