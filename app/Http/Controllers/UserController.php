@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -37,14 +38,14 @@ class UserController extends ApiController
         $validator = Validator::make($request->all(), [
             'username' => 'required|string|max:125',
             'password' => 'required|string|max:125',
-            'token_name' => ''
+            'token_name' => 'sometimes|required|string|max:125',
         ]);
         if ($validator->fails()) {
             return $this->api_fail(['ValidationErorrs' => $validator->errors()->all()], 400);
         }
         $validated = $validator->validated();
         
-        if (auth()->once($validated)) {
+        if (auth()->once(Arr::only($validated, ['username', 'password']))) {
             $tokenName = $request->token_name ?? 'mainToken';
             /** @var User $user */
             $user = auth()->user();
