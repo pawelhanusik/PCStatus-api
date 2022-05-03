@@ -14,7 +14,7 @@ The consists of 3 subprograms:
 
 The goal of the project is to add new feature to the smartphone by connecting it with pc. By doing so it will gain remote monitoring functionalities.
 
-## Usa cases
+## Use cases
 
 Progress of any bash script, any process, monitoring RAM, cpu usage & more.
 
@@ -23,6 +23,8 @@ Progress of any bash script, any process, monitoring RAM, cpu usage & more.
 ## Installation
 
 1. Clone repository.
+
+1. Install php 8 (with mbstring, dom, curl extensions)
 
 1. Install php dependencies:
 
