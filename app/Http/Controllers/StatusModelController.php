@@ -60,8 +60,8 @@ class StatusModelController extends ApiController
         $validated = $validator->validated();
         $validated['user_id'] = auth()->user()->id;
 
-        static::$modelClass::create($validated);
-        return $this->api_ok();
+        $newModel = static::$modelClass::create($validated);
+        return $newModel?->id;
     }
 
     public function update(Request $request, $modelId)
