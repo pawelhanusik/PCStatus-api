@@ -20,6 +20,32 @@ Progress of any bash script, any process, monitoring RAM, cpu usage & more.
 
 ---
 
+## Usage
+
+Creating new user
+
+`php artisan user:register username password`
+
+Listing users
+
+`php artisan user:list`
+
+Deleting the user
+
+`php artisan user:delete username`
+
+Generating new token
+
+`php artisan token:create username token_name`
+
+Listing existing tokens
+
+`php artisan token:list username`
+
+Deleting token
+
+`php artisan token:remove username token_name`
+
 ## Installation
 
 1. Clone repository.
