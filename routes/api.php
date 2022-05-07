@@ -23,6 +23,7 @@ Route::prefix('user')->group(function () {
     Route::post('/register', [UserController::class, 'register'])->name('user.register');
     Route::post('/login', [UserController::class, 'login'])->name('user.login');
     Route::post('/refresh', [UserController::class, 'refresh'])->middleware('auth:sanctum')->name('user.refresh');
+    Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum')->name('user.logout');
 });
 
 Route::middleware('auth:sanctum')->group(function () {

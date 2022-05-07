@@ -79,4 +79,16 @@ class UserController extends ApiController
         $token = $user->createToken($tokenName);
         return response($token->plainTextToken);
     }
+
+    public function logout() {
+        /** @var User $user */
+        $user = auth()->user();
+
+        /** @var PersonalAccessToken */
+        $currentToken = $user->currentAccessToken();
+        $tokenName = $currentToken->name;
+        $currentToken->delete();
+        
+        return $this->api_ok();
+    }
 }
