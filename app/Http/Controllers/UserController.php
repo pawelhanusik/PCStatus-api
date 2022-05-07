@@ -17,20 +17,28 @@ class UserController extends ApiController
 
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:125|unique:users',
-            'password' => 'required|string|max:125',
-            'password2' => 'required|same:password'
-        ]);
-        if ($validator->fails()) {
-            return $this->api_fail(['ValidationErorrs' => $validator->errors()->all()], 400);
+        $isRegisteringDisabled = config('pcstatus.disable_registering');
+
+        if ($isRegisteringDisabled) {
+            return $this->api_fail([
+                'error' => 'Registering is disabled.',
+            ]);
+        } else {
+            $validator = Validator::make($request->all(), [
+                'username' => 'required|string|max:125|unique:users',
+                'password' => 'required|string|max:125',
+                'password2' => 'required|same:password'
+            ]);
+            if ($validator->fails()) {
+                return $this->api_fail(['ValidationErorrs' => $validator->errors()->all()], 400);
+            }
+            $validated = $validator->validated();
+    
+            $validated['password'] = Hash::make($validated['password']);
+            User::create($validated);
+    
+            return $this->api_ok();
         }
-        $validated = $validator->validated();
-
-        $validated['password'] = Hash::make($validated['password']);
-        User::create($validated);
-
-        return $this->api_ok();
     }
 
     public function login(Request $request)
